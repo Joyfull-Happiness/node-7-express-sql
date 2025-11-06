@@ -96,6 +96,11 @@ app.get("/get-one-animal-by-name/:name", async (req, res) => {
 // 4. GET /get-newest-animal
 
 // 5. POST /delete-one-animal/:id
+app.post("/delete-one-animal/:id", async (req, res) => {
+  const id = req.params.id;
+  const animal = await deleteOneAnimal(id);
+  res.json(animal);
+});
 
 // 6. POST /add-one-animal
 
