@@ -99,8 +99,18 @@ app.get("/get-one-animal-by-name/:name", async (req, res) => {
 });
 
 // 3. GET /get-one-animal-by-id/:id
-
+app.get("/get-one-animal-by-id/:id", async (req, res) => {
+  let id = req.params.id;
+  const animal = await getOneAnimalById(id);
+  res.json(animal);
+});
 // 4. GET /get-newest-animal
+
+app.get("/get-newest-animal", async (req, res) => {
+  let newestAnimal = req.params.[0];
+  const pramaNewestAnimal = await getNewestAnimal(newestAnimal);
+  res.json(pramaNewestAnimal);
+});
 
 // 5. POST /delete-one-animal/:id
 app.post("/delete-one-animal/:id", async (req, res) => {
