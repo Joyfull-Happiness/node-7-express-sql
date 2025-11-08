@@ -45,7 +45,10 @@ async function getOneAnimalByName(name) {
 }
 
 // 3. getOneAnimalById(id)
-
+async function getOneAnimalById(name) {
+  const data = await db.query("SELECT * FROM animals WHERE id = $1", [id]);
+  return data.rows[0];
+}
 // 4. getNewestAnimal()
 
 // 5. deleteOneAnimal(id)
