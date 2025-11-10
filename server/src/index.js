@@ -90,7 +90,13 @@ async function updateOneAnimalName(id, newName) {
 }
 
 // 8. updateOneAnimalCategory(id, newCategory)
-
+async function updateOneAnimalCategory(animalId, newCategory) {
+  const updatedAnimalId = await db.query(
+    "UPDATE animals SET category = $1 WHERE id = $2 RETURNING id",
+    [newCategory, animalId]
+  );
+  return updatedAnimalId.rows[0];
+}
 // ---------------------------------
 // API Endpoints
 // ---------------------------------
@@ -187,10 +193,23 @@ app.post("/update-one-animal-name-with-error-handling", async (req, res) => {
 });
 
 // 8. POST /update-one-animal-category
+
 app.post("/update-one-animal-category", async (req, res) => {
-  const { id, newName } = req.body;
+  try {
+    const { animalId, newCategory } = req.body;
+    if (!newCategory || !animalId) {
+      return res.status(400).send("Error: Missing required fields");
+    }
+    const updatedAnimalId = await updateOneAnimalCategory(id, newCategory);
+    // console.log(updatedId);
+    if (!updatedId) {
+      return res.status(400).send("Error: 404 animal not found!");
+    } else {
+      return res.send("Success! The animal's category was updated.");
+    }
 
-  await updateOneAnimalName(id, newName);
-
-  res.send(`Success! The animal's name was updated.`);
+    res.send("Success! The animal's category was updated.");
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
 });
