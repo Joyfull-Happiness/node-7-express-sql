@@ -45,19 +45,28 @@ async function getOneAnimalByName(name) {
 }
 
 // 3. getOneAnimalById(id)
-async function getOneAnimalById(name) {
-  const data = await db.query("SELECT * FROM animals WHERE id = $1", [id]);
+// pass through the id for the getOneAnimalById function
+//(pass through the id (saving it as the param) because the url is changing according to the id)
+//
+async function getOneAnimalById(animalId) {
+  const data = await db.query("SELECT * FROM animals WHERE id = $1", [
+    animalId,
+  ]);
   return data.rows[0];
 }
+
 // 4. getNewestAnimal()
+async function getNewestAnimal() {
+  const data = await db.query("SELECT * FROM animals ORDER BY id DESC LIMIT 1");
+  return data.rows[0];
+}
 
 // 5. deleteOneAnimal(id)
-async function deleteOneAnimal(id) {
-  const deletedAnimal = await db.query(
-    "DELETE FROM animals WHERE id =$1 RETURNING *",
-    [id]
-  );
-  return deletedAnimal.rows[0];
+async function deleteOneAnimalId(deletedAnimalName) {
+  const data = await db.query("DELETE FROM animals WHERE name = $1 ", [
+    deletedAnimalName,
+  ]);
+  return data.rows[0];
 }
 
 // 6. addOneAnimal(name, category, can_fly, lives_in)
@@ -102,24 +111,26 @@ app.get("/get-one-animal-by-name/:name", async (req, res) => {
 });
 
 // 3. GET /get-one-animal-by-id/:id
+//we create the variable id to be passed into the function as a param (held by the animal variable)
+//then res.json sends this function and the variable id t the helper function
 app.get("/get-one-animal-by-id/:id", async (req, res) => {
   let id = req.params.id;
-  const animal = await getOneAnimalById(id);
+  const animal = await getOneAnimalById(id); //calls the api with the code in the helper function //(above)this is the function call
   res.json(animal);
 });
+
 // 4. GET /get-newest-animal
 
 app.get("/get-newest-animal", async (req, res) => {
-  let newestAnimal = req.params.[0];
-  const pramaNewestAnimal = await getNewestAnimal(newestAnimal);
-  res.json(pramaNewestAnimal);
+  const newestAnimal = await getNewestAnimal();
+  res.json(newestAnimal);
 });
 
 // 5. POST /delete-one-animal/:id
 app.post("/delete-one-animal/:id", async (req, res) => {
-  const id = req.params.id;
-  const deletedAnimal = await deleteOneAnimal(id);
-  res.json(deletedAnimal);
+  const deleteOneAnimal = req.params.id;
+  await deleteOneAnimalId(deleteOneAnimal);
+  res.send(`Success ${deleteOneAnimal} was deleted!`);
 });
 
 // 6. POST /add-one-animal
