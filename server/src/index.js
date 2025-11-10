@@ -187,3 +187,10 @@ app.post("/update-one-animal-name-with-error-handling", async (req, res) => {
 });
 
 // 8. POST /update-one-animal-category
+app.post("/update-one-animal-category", async (req, res) => {
+  const { id, newName } = req.body;
+
+  await updateOneAnimalName(id, newName);
+
+  res.send(`Success! The animal's name was updated.`);
+});
