@@ -90,11 +90,21 @@ async function updateOneAnimalName(id, newName) {
 }
 
 // 8. updateOneAnimalCategory(id, newCategory)
+//this function is updating the category of one animal in the database
+//this function is using async/await to communitcate with the database
+//i am passing through anialId and newCategory becuae thae data base needs to know which animal to update and what new category to change it to
 async function updateOneAnimalCategory(animalId, newCategory) {
+  //now i'm establishing the variable updatedAnimalId to await for the endpoint call before it looks into the database query to update the animal's category in a certain position based off of the id inputted
+  //i'm using the database connection (db) to run a SQL UPDATE querey
+  //the querey is reaplacing the category column with a new value for the animal that matches the given id ($2)
+  //i made sure to add a return call to send back the id of the animal that was updated back to the user
   const updatedAnimalId = await db.query(
     "UPDATE animals SET category = $1 WHERE id = $2 RETURNING id",
-    [newCategory, animalId]
+    [newCategory, animalId] //these values are replacing $1 and $2 in the sql querey
   );
+  //the data base is now returning the array of results inside the rows
+  //since we are only updated one cnaimal we are tkaing in the first result that comes up [0]
+  //return the row so the function call can use it
   return updatedAnimalId.rows[0];
 }
 // ---------------------------------
