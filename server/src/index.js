@@ -193,23 +193,38 @@ app.post("/update-one-animal-name-with-error-handling", async (req, res) => {
 });
 
 // 8. POST /update-one-animal-category
-
+//below i am creating the api endpoint for the app and sending a post request to update an animal's category syncing endpoint with the function passing through the request and response
 app.post("/update-one-animal-category", async (req, res) => {
+  //below I am setting up and error to show back to the user incase they don't enter the correct category
+
   try {
+    // pull out the values for the data (animalId and newCategory) sent from the client in the request body
     const { animalId, newCategory } = req.body;
+
+    // If animalId or newCategory is missing, send back an error response (400 = bad request)
     if (!newCategory || !animalId) {
       return res.status(400).send("Error: Missing required fields");
     }
-    const updatedAnimalId = await updateOneAnimalCategory(id, newCategory);
-    // console.log(updatedId);
-    if (!updatedId) {
+
+    // Call the function that updates the animal's category in the database
+    // and wait for it to finish before moving on
+    const updatedAnimalId = await updateOneAnimalCategory(
+      animalId,
+      newCategory
+    );
+
+    // If the update function did not find an animal to update, return an error (404 = not found)
+    if (!updatedAnimalId) {
       return res.status(400).send("Error: 404 animal not found!");
     } else {
+      // If everything worked, send a success message back to the client
       return res.send("Success! The animal's category was updated.");
     }
 
+    // (This line is actually unnecessary because we already returned above)
     res.send("Success! The animal's category was updated.");
   } catch (error) {
+    // If something goes wrong anywhere in the try block, catch the error and respond with status 500
     res.status(500).send("Internal Server Error");
   }
 });
