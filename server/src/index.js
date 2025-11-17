@@ -62,9 +62,9 @@ async function getNewestAnimal() {
 }
 
 // 5. deleteOneAnimal(id)
-async function deleteOneAnimalId(deletedAnimalName) {
-  const data = await db.query("DELETE FROM animals WHERE name = $1 ", [
-    deletedAnimalName,
+async function deleteOneAnimalId(deletedAnimalId) {
+  const data = await db.query("DELETE FROM animals WHERE id = $1 ", [
+    deletedAnimalId,
   ]);
   return data.rows[0];
 }
